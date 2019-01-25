@@ -1,0 +1,15 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-tgp.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\l016944h\Documents\Unreal Projects\tgp\Intermediate\Build\Win64\tgpEditor\Development\Engine\SharedPCH.Engine.h.obj"
+"C:\Users\l016944h\Documents\Unreal Projects\tgp\Intermediate\Build\Win64\UE4Editor\Development\tgp\tgp.cpp.obj"
+"C:\Users\l016944h\Documents\Unreal Projects\tgp\Intermediate\Build\Win64\UE4Editor\Development\tgp\tgpGameModeBase.cpp.obj"
+"C:\Users\l016944h\Documents\Unreal Projects\tgp\Intermediate\Build\Win64\UE4Editor\Development\tgp\tgp.init.gen.cpp.obj"
+"C:\Users\l016944h\Documents\Unreal Projects\tgp\Intermediate\Build\Win64\UE4Editor\Development\tgp\tgpGameModeBase.gen.cpp.obj"
+"C:\Users\l016944h\Documents\Unreal Projects\tgp\Intermediate\Build\Win64\UE4Editor\Development\tgp\PCLaunch.rc.res"
+/OUT:"C:\Users\l016944h\Documents\Unreal Projects\tgp\Intermediate\Build\Win64\UE4Editor\Development\tgp\UE4Editor-tgp.lib"
