@@ -1,3 +1,0 @@
-C:\Users\l016944h\Documents\Unreal Projects\tgp\Source\tgp\tgp.Build.cs
-C:\Users\l016944h\Documents\Unreal Projects\tgp\Source\tgp.Target.cs
-C:\Users\l016944h\Documents\Unreal Projects\tgp\Source\tgpEditor.Target.cs
