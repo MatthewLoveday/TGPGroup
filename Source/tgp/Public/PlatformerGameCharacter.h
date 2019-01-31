@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-
+#include "Engine/World.h"
 #include "PlatformerGameCharacter.generated.h"
 
 UCLASS()
@@ -35,6 +35,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	
+	UFUNCTION(BlueprintCallable)
+	FHitResult PerformWalljumpTrace(ECollisionChannel traceChannel, float length = 20.0f, bool DrawTrace = false);
 	
 };
