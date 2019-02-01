@@ -63,17 +63,29 @@ void APlatformerGameCharacter::SetupPlayerInputComponent(UInputComponent* Player
 	check(PlayerInputComponent);
 }
 
-FHitResult APlatformerGameCharacter::PerformWalljumpTrace(ECollisionChannel traceChannel, float length, bool DrawTrace)
+FHitResult APlatformerGameCharacter::PerformWallTrace(ECollisionChannel traceChannel, float ZOffset, float length, bool DrawTrace, bool invert)
 {
 	FHitResult result;
 
 	FCollisionQueryParams queryParams;
-	queryParams.TraceTag = "WallJumpTag";
+	FString tTag = "PWallTag" + FString::SanitizeFloat(ZOffset);
 
+	if(DrawTrace)
+	{
+		queryParams.TraceTag = *tTag;
+	}
 	if(GetWorld())
 	{
-		GetWorld()->LineTraceSingleByChannel(result, GetActorLocation(), GetActorLocation() + GetActorForwardVector() * length, traceChannel, queryParams);
-		GetWorld()->DebugDrawTraceTag = "WallJumpTag";
+		GetWorld()->LineTraceSingleByChannel(result, 
+			GetActorLocation() + FVector(0.0f, 0.0f, ZOffset),
+			(GetActorLocation() + FVector(0.0f, 0.0f, ZOffset) + ((invert ? -1 : 1) * GetActorForwardVector()) * length), 
+			traceChannel, 
+			queryParams);
+		
+		if(DrawTrace)
+		{
+			GetWorld()->DebugDrawTraceTag = queryParams.TraceTag;			
+		}
 	}
 
 	return result;
