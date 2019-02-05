@@ -91,3 +91,35 @@ FHitResult APlatformerGameCharacter::PerformWallTrace(ECollisionChannel traceCha
 	return result;
 }
 
+FHitResult APlatformerGameCharacter::PerformCircleTrace(ECollisionChannel traceChannel, float ZOffset, float radius, bool DrawDebug)
+{
+	FHitResult result;
+
+	FCollisionQueryParams queryParams;
+	FString tTag = "PCircleTrace" + FString::SanitizeFloat(ZOffset);
+
+	if(DrawDebug)
+	{
+		queryParams.TraceTag = *tTag;
+	}
+
+	if(GetWorld())
+	{
+		GetWorld()->SweepSingleByChannel(result, 
+			GetActorLocation() + FVector(0.0f, 0.0f, ZOffset),
+			GetActorLocation() + FVector(0.0f, 0.0f, ZOffset),
+			FQuat::Identity,
+			traceChannel,
+			FCollisionShape::MakeBox(FVector(radius, radius, 1.0)),
+			queryParams
+		);
+
+		if(DrawDebug)
+		{
+			GetWorld()->DebugDrawTraceTag = queryParams.TraceTag;
+		}
+	}
+
+	return result;
+}
+

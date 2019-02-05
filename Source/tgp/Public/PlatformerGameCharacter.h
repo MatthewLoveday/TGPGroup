@@ -36,6 +36,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable)
-	FHitResult PerformWallTrace(ECollisionChannel traceChannel = ECC_GameTraceChannel1, float ZOffset = 0.0f, float length = 20.0f, bool DrawTrace = false, bool invert = false);
+	FHitResult PerformWallTrace(ECollisionChannel traceChannel = ECC_GameTraceChannel1, float ZOffset = 0.0f, float length = 50.0f, bool DrawTrace = false, bool invert = false);
 
+	UFUNCTION(BlueprintCallable)
+	FHitResult PerformCircleTrace(ECollisionChannel traceChannel = ECC_GameTraceChannel1, float ZOffset = 0.0f, float radius = 60.0f, bool DrawDebug = false);
 };
