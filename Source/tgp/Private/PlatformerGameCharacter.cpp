@@ -63,17 +63,61 @@ void APlatformerGameCharacter::SetupPlayerInputComponent(UInputComponent* Player
 	check(PlayerInputComponent);
 }
 
-FHitResult APlatformerGameCharacter::PerformWalljumpTrace(ECollisionChannel traceChannel, float length, bool DrawTrace)
+FHitResult APlatformerGameCharacter::PerformWallTrace(ECollisionChannel traceChannel, float ZOffset, float length, bool DrawTrace, bool invert)
 {
 	FHitResult result;
 
 	FCollisionQueryParams queryParams;
-	queryParams.TraceTag = "WallJumpTag";
+	FString tTag = "PWallTag" + FString::SanitizeFloat(ZOffset);
+
+	if(DrawTrace)
+	{
+		queryParams.TraceTag = *tTag;
+	}
+	if(GetWorld())
+	{
+		GetWorld()->LineTraceSingleByChannel(result, 
+			GetActorLocation() + FVector(0.0f, 0.0f, ZOffset),
+			(GetActorLocation() + FVector(0.0f, 0.0f, ZOffset) + ((invert ? -1 : 1) * GetActorForwardVector()) * length), 
+			traceChannel, 
+			queryParams);
+		
+		if(DrawTrace)
+		{
+			GetWorld()->DebugDrawTraceTag = queryParams.TraceTag;			
+		}
+	}
+
+	return result;
+}
+
+FHitResult APlatformerGameCharacter::PerformCircleTrace(ECollisionChannel traceChannel, float ZOffset, float radius, bool DrawDebug)
+{
+	FHitResult result;
+
+	FCollisionQueryParams queryParams;
+	FString tTag = "PCircleTrace" + FString::SanitizeFloat(ZOffset);
+
+	if(DrawDebug)
+	{
+		queryParams.TraceTag = *tTag;
+	}
 
 	if(GetWorld())
 	{
-		GetWorld()->LineTraceSingleByChannel(result, GetActorLocation(), GetActorLocation() + GetActorForwardVector() * length, traceChannel, queryParams);
-		GetWorld()->DebugDrawTraceTag = "WallJumpTag";
+		GetWorld()->SweepSingleByChannel(result, 
+			GetActorLocation() + FVector(0.0f, 0.0f, ZOffset),
+			GetActorLocation() + FVector(0.0f, 0.0f, ZOffset),
+			FQuat::Identity,
+			traceChannel,
+			FCollisionShape::MakeBox(FVector(radius, radius, 1.0)),
+			queryParams
+		);
+
+		if(DrawDebug)
+		{
+			GetWorld()->DebugDrawTraceTag = queryParams.TraceTag;
+		}
 	}
 
 	return result;
