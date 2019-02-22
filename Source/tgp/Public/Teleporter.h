@@ -1,0 +1,37 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "Teleporter.generated.h"
+
+UCLASS()
+class TGP_API ATeleporter : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	ATeleporter();
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Teleport Location")
+		AActor* teleportLocation;
+
+	UPROPERTY(EditAnywhere)
+		class UBoxComponent* TeleportBox;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMesh* TeleportMesh;
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	void OnActorBeginOverlap(AActor* otherActor);
+	void BeginTeleport(AActor* otherActor);
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+};
