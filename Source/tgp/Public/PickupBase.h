@@ -7,6 +7,7 @@
 #include "PickupBase.generated.h"
 
 class USphereComponent;
+class UParticleSystemComponent;
 
 UCLASS()
 class TGP_API APickupBase : public AActor
@@ -22,16 +23,30 @@ protected:
 	virtual void BeginPlay() override;
 
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USphereComponent *SphereCollision;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UStaticMeshComponent *MeshComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 	USoundBase *OverlapSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	UParticleSystemComponent *CollectEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	UParticleSystemComponent *ConstantEffect;
+
+	int RotationSpeed;
+	FRotator CurrentRotation;
 
 	UFUNCTION()
 	void HandleOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, 
 					  UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, 
 					  bool bFromSweep, const FHitResult &SweepResult);
+
+	void RotateActor();
 
 public:	
 	// Called every frame
