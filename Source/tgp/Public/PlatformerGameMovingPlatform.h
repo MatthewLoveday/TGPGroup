@@ -21,21 +21,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	void HandleBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
-					   UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
-					   bool bFromSweep, const FHitResult &SweepResult);
-
-	UFUNCTION()
-	void HandleEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
-					   UPrimitiveComponent *OtherComp, int32 OtherBodyIndex);
-
-	void MovePlatformToEndLocation();
-	void MovePlatformToStartLocation();
-
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-	UBoxComponent *CollisionComp;
-
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent *MeshComp;
 
@@ -46,13 +31,14 @@ protected:
 	float MovementSpeed;
 
 
-	bool bPlayerOnPlatform;
 	FVector StartLocation, EndLocation, Difference;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void MovePlatformToEndLocation();
+	void MovePlatformToStartLocation();
 	
 	
 };
