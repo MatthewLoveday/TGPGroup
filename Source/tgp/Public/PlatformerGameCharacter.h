@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "tgp.h"
 #include "GameFramework/Character.h"
 #include "Engine/World.h"
 #include "PlatformerGameCharacter.generated.h"
+
 
 UCLASS()
 class TGP_API APlatformerGameCharacter : public ACharacter
@@ -24,6 +25,8 @@ public:
 	// Sets default values for this character's properties
 	APlatformerGameCharacter();
 
+	EMovesetEnum moveSet;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -41,3 +44,4 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FHitResult PerformCircleTrace(ECollisionChannel traceChannel = ECC_GameTraceChannel1, float ZOffset = 0.0f, float radius = 60.0f, bool DrawDebug = false);
 };
+
