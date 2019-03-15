@@ -24,13 +24,16 @@ class TGP_API APlatformerGameCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	APlatformerGameCharacter();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Moveset)
-	EMovesetEnum moveSet;
+
+	UFUNCTION(BlueprintCallable)
+	void ChangeMoveset(EMovesetEnum newMoveSet);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Moveset)
+	EMovesetEnum moveSet;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
