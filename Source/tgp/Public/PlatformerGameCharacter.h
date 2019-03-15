@@ -34,6 +34,24 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Moveset)
 	EMovesetEnum moveSet;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void EnterDefaultMoveSet();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void EnterHeliMoveSet();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void EnterBalloonMoveSet();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ExitDefaultMoveSet();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ExitHeliMoveSet();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ExitBalloonMoveSet();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
