@@ -29,6 +29,10 @@ public:
 	void ChangeMoveset(EMovesetEnum newMoveSet);
 
 protected:
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Collectables")
+	int CollectableCount;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
