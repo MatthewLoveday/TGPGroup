@@ -42,6 +42,53 @@ APlatformerGameCharacter::APlatformerGameCharacter()
 	FollowCamera->AttachToComponent(CameraBoom, FAttachmentTransformRules::SnapToTargetIncludingScale);
 }
 
+void APlatformerGameCharacter::ChangeMoveset(EMovesetEnum newMoveSet)
+{
+	if(moveSet == newMoveSet)
+	{
+		return;
+	}
+
+	
+	switch(moveSet) //Exit Conditions
+	{
+	case EMovesetEnum::M_Default:
+		ExitDefaultMoveSet();
+		break;
+
+	case EMovesetEnum::M_Balloon:
+		ExitBalloonMoveSet();
+		break;
+
+	case EMovesetEnum::M_Helicopter:
+		ExitHeliMoveSet();
+		break;
+
+	default:
+		break;
+	}
+
+	moveSet = newMoveSet;
+
+	switch(newMoveSet) //Entry Conditions
+	{
+	case EMovesetEnum::M_Default:
+		EnterDefaultMoveSet();
+		break;
+
+	case EMovesetEnum::M_Balloon:
+		EnterBalloonMoveSet();
+		break;
+
+	case EMovesetEnum::M_Helicopter:
+		EnterHeliMoveSet();
+		break;
+
+	default:
+		break;
+	}
+}
+
 // Called when the game starts or when spawned
 void APlatformerGameCharacter::BeginPlay()
 {
