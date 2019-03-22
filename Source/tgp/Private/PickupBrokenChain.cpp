@@ -15,6 +15,8 @@ APickupBrokenChain::APickupBrokenChain()
 	ConstantEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ConstantEffect"));
 	ConstantEffect->bAutoActivate = true;
 	ConstantEffect->SetupAttachment(RootComponent);
+
+	BounceVal = 1;
 }
 
 void APickupBrokenChain::BeginPlay()
@@ -25,6 +27,8 @@ void APickupBrokenChain::BeginPlay()
 void APickupBrokenChain::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	CollectableBounce(DeltaTime);
 
 	if (!ConstantEffect->IsActive() && CollectEffect->HasCompleted())
 	{
@@ -50,4 +54,16 @@ void APickupBrokenChain::HandleOverlap(UPrimitiveComponent *OverlappedComponent,
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Overlap occured"));
+}
+
+void APickupBrokenChain::CollectableBounce(float DeltaTime)
+{
+	BounceVal++;
+
+	double ZIncrease = sin(BounceVal * DeltaTime);
+
+	FVector CurrentLocation = GetActorLocation();
+	CurrentLocation.Z += ZIncrease;
+
+	SetActorLocation(CurrentLocation);
 }
