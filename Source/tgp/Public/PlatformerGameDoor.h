@@ -4,41 +4,40 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PlatformerGameMovingPlatform.generated.h"
-
-class UBoxComponent;
+#include "PlatformerGameDoor.generated.h"
 
 UCLASS()
-class TGP_API APlatformerGameMovingPlatform : public AActor
+class TGP_API APlatformerGameDoor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APlatformerGameMovingPlatform();
+	APlatformerGameDoor();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent *MeshComp;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	FVector MovementDirection;
+	float RotateAmount;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	float MovementSpeed;
+	float SlideAmount;
 
+	bool bIsOpening;
 
-	FVector StartLocation, EndLocation, Difference;
+	FRotator StartRotation, EndRotation, DifferenceRotation;
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	void MoveToSetRotation();
+	void MoveToStartRotation();
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	void MovePlatformToEndLocation();
-	void MovePlatformToStartLocation();
-	
 	
 };

@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PickupBase.h"
-#include "PlatformerGameCharacter.h"
-#include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 APickupBase::APickupBase()
@@ -13,39 +13,40 @@ APickupBase::APickupBase()
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComp"));
 	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	SphereCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	SphereCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	RootComponent = SphereCollision;
 	
-	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &APickupBase::HandleOverlap);
 	SphereCollision->SetHiddenInGame(false);
 
+	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	MeshComp->SetGenerateOverlapEvents(false);
+	MeshComp->SetupAttachment(RootComponent);
+
+	CollectEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("CollectEffect"));
+	CollectEffect->bAutoActivate = false;
+	CollectEffect->SetupAttachment(RootComponent);
+
+	RotationSpeed = 1;
+	CurrentRotation = GetActorRotation();
 }
 
 // Called when the game starts or when spawned
 void APickupBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void APickupBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	RotateActor();
 }
 
-void APickupBase::HandleOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, 
-							   UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, 
-							   bool bFromSweep, const FHitResult &SweepResult)
+void APickupBase::RotateActor()
 {
-	APlatformerGameCharacter *MyCharacter = Cast<APlatformerGameCharacter>(OtherActor);
-
-	if (MyCharacter)
-	{
-		UGameplayStatics::PlaySound2D(this, OverlapSound);
-	}
-
-	UE_LOG(LogTemp, Log, TEXT("Overlap occured"));
+	CurrentRotation.Yaw += RotationSpeed;
+	SetActorRotation(CurrentRotation);
 }
