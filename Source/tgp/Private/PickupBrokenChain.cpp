@@ -30,11 +30,11 @@ void APickupBrokenChain::Tick(float DeltaTime)
 
 	CollectableBounce(DeltaTime);
 
-	if (!ConstantEffect->IsActive() && CollectEffect->HasCompleted())
+	/*if (!ConstantEffect->IsActive() && CollectEffect->HasCompleted())
 	{
 		UE_LOG(LogTemp, Log, TEXT("Particle Finished"));
-		Destroy();
-	}
+		//Destroy();
+	}*/
 }
 
 void APickupBrokenChain::HandleOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
