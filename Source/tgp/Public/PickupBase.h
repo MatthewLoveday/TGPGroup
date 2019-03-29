@@ -34,10 +34,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	UParticleSystemComponent *CollectEffect;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Collection")
+	bool IsCollected;
+	
 	int RotationSpeed;
 	FRotator CurrentRotation;
 
+
 	void RotateActor();
+	void HideCollectable();
 
 public:	
 	// Called every frame

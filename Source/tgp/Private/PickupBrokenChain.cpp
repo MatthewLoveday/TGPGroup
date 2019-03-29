@@ -22,6 +22,9 @@ APickupBrokenChain::APickupBrokenChain()
 void APickupBrokenChain::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (IsCollected) HideCollectable();
+	ConstantEffect->Deactivate();
 }
 
 void APickupBrokenChain::Tick(float DeltaTime)
@@ -29,12 +32,6 @@ void APickupBrokenChain::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	CollectableBounce(DeltaTime);
-
-	/*if (!ConstantEffect->IsActive() && CollectEffect->HasCompleted())
-	{
-		UE_LOG(LogTemp, Log, TEXT("Particle Finished"));
-		//Destroy();
-	}*/
 }
 
 void APickupBrokenChain::HandleOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
@@ -46,9 +43,8 @@ void APickupBrokenChain::HandleOverlap(UPrimitiveComponent *OverlappedComponent,
 	if (MyCharacter)
 	{
 		UGameplayStatics::PlaySound2D(this, OverlapSound);
-		SphereCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		SphereCollision->SetVisibility(false);
-		MeshComp->SetVisibility(false);
+		HideCollectable();
+		IsCollected = true;
 		ConstantEffect->Deactivate();
 		CollectEffect->Activate();
 	}

@@ -50,3 +50,10 @@ void APickupBase::RotateActor()
 	CurrentRotation.Yaw += RotationSpeed;
 	SetActorRotation(CurrentRotation);
 }
+
+void APickupBase::HideCollectable()
+{
+	SphereCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SphereCollision->SetVisibility(false);
+	MeshComp->SetVisibility(false);
+}
