@@ -25,9 +25,6 @@ protected:
 			UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult &SweepResult);
 
-	UPROPERTY(EditAnywhere, Category = "Teleport Options")
-		FVector NewTeleportLocation;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category =TeleportReference)
 	APlatformerGameSafetyNet* SafetyNetRef;
 	
