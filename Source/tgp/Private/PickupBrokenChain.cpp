@@ -23,8 +23,11 @@ void APickupBrokenChain::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (IsCollected) HideCollectable();
-	ConstantEffect->Deactivate();
+	if (IsCollected)
+	{
+		HideCollectable();
+		ConstantEffect->Deactivate();
+	}
 }
 
 void APickupBrokenChain::Tick(float DeltaTime)
