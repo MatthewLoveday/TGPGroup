@@ -21,5 +21,6 @@ void APickupCollectable::HandleOverlap(UPrimitiveComponent *OverlappedComponent,
 		UGameplayStatics::PlaySound2D(this, OverlapSound);
 		HideCollectable();
 		IsCollected = true;
+		MyCharacter->IncrementCollectableCount();
 	}
 }

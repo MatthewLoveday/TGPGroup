@@ -48,6 +48,7 @@ void APickupBrokenChain::HandleOverlap(UPrimitiveComponent *OverlappedComponent,
 		UGameplayStatics::PlaySound2D(this, OverlapSound);
 		HideCollectable();
 		IsCollected = true;
+		MyCharacter->IncrementCollectableCount();
 		ConstantEffect->Deactivate();
 		CollectEffect->Activate();
 	}
