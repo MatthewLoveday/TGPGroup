@@ -10,13 +10,6 @@ APickupCollectable::APickupCollectable()
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &APickupCollectable::HandleOverlap);
 }
 
-void APickupCollectable::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (IsCollected) HideCollectable();
-}
-
 void APickupCollectable::HandleOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
 									   UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
 									   bool bFromSweep, const FHitResult &SweepResult)

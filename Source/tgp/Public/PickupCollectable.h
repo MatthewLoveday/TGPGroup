@@ -17,8 +17,6 @@ public:
 	APickupCollectable();
 
 protected:
-	
-	virtual void BeginPlay();
 
 	UFUNCTION()
 	void HandleOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
