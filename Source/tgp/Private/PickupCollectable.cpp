@@ -4,6 +4,7 @@
 #include "Components/SphereComponent.h"
 #include "PlatformerGameCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 APickupCollectable::APickupCollectable()
 {
@@ -22,5 +23,6 @@ void APickupCollectable::HandleOverlap(UPrimitiveComponent *OverlappedComponent,
 		HideCollectable();
 		IsCollected = true;
 		MyCharacter->IncrementCollectableCount();
+		CollectEffect->Activate();
 	}
 }
