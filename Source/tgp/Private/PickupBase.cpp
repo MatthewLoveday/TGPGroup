@@ -36,6 +36,8 @@ APickupBase::APickupBase()
 void APickupBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (IsCollected) HideCollectable();
 }
 
 // Called every frame
