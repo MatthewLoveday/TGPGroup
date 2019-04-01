@@ -3,7 +3,6 @@
 #include "IDoor.h"
 #include "Components/StaticMeshComponent.h"
 
-// Sets default values
 AIDoor::AIDoor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -19,7 +18,6 @@ AIDoor::AIDoor()
 	CanRotate = false;
 }
 
-// Called when the game starts or when spawned
 void AIDoor::BeginPlay()
 {
 	Super::BeginPlay();
@@ -34,7 +32,6 @@ void AIDoor::BeginPlay()
 	DistanceToEndRot = EndRotation - StartRotation;
 }
 
-// Called every frame
 void AIDoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -100,6 +97,10 @@ void AIDoor::SlideDoorClose()
 
 void AIDoor::RotateDoorOpen()
 {
+	/*
+	* Converting the rotator to a vector and then using the equals function
+	* becuase the rotator equals function doesn't work at the moment and may be bugged
+	*/
 	if (GetActorRotation().Vector().Equals(EndRotation.Vector()))
 	{
 		CanRotate = false;
