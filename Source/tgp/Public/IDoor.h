@@ -32,9 +32,12 @@ protected:
 	float MovementSpeed;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	FVector DistanceToMove;
+	float RotationSpeed;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
+	FVector DistanceToMove;
+
+	UPROPERTY(EditAnywhere, Category = "Movement", meta = (ClampMin = "0.0", ClampMax = "360.0", UIMin = "0.0", UIMax = "360.0"))
 	FRotator DistanceToRotate;
 
 	FVector StartLocation, DistanceToEndLoc, EndLocation;

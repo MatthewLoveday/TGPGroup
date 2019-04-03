@@ -60,13 +60,13 @@ void AIDoor::SlideDoorOpen()
 		FVector CurrentLocation = GetActorLocation();
 
 		if (DistanceToEndLoc.X != 0.0f)
-			CurrentLocation.X += 1.0f;
+			CurrentLocation.X += MovementSpeed;
 
 		if (DistanceToEndLoc.Y != 0.0f)
-			CurrentLocation.Y += 1.0f;
+			CurrentLocation.Y += MovementSpeed;
 
 		if (DistanceToEndLoc.Z != 0.0f)
-			CurrentLocation.Z += 1.0f;
+			CurrentLocation.Z += MovementSpeed;
 
 		SetActorLocation(CurrentLocation);
 	}
@@ -83,13 +83,13 @@ void AIDoor::SlideDoorClose()
 		FVector CurrentLocation = GetActorLocation();
 
 		if (DistanceToEndLoc.X != 0.0f)
-			CurrentLocation.X -= 1.0f;
+			CurrentLocation.X -= MovementSpeed;
 
 		if (DistanceToEndLoc.Y != 0.0f)
-			CurrentLocation.Y -= 1.0f;
+			CurrentLocation.Y -= MovementSpeed;
 
 		if (DistanceToEndLoc.Z != 0.0f)
-			CurrentLocation.Z -= 1.0f;
+			CurrentLocation.Z -= MovementSpeed;
 
 		SetActorLocation(CurrentLocation);
 	}
@@ -110,13 +110,13 @@ void AIDoor::RotateDoorOpen()
 		FRotator CurrentRotation = GetActorRotation();
 
 		if (DistanceToEndRot.Roll != 0.0f)
-			CurrentRotation.Roll += 1.0f;
+			CurrentRotation.Roll += RotationSpeed;
 
 		if (DistanceToEndRot.Pitch != 0.0f)
-			CurrentRotation.Pitch += 1.0f;
+			CurrentRotation.Pitch += RotationSpeed;
 
 		if (DistanceToEndRot.Yaw != 0.0f)
-			CurrentRotation.Yaw += 1.0f;
+			CurrentRotation.Yaw += RotationSpeed;
 
 		SetActorRotation(CurrentRotation);
 	}
@@ -133,13 +133,13 @@ void AIDoor::RotateDoorClose()
 		FRotator CurrentRotation = GetActorRotation();
 
 		if (DistanceToEndRot.Roll != 0.0f)
-			CurrentRotation.Roll -= 1.0f;
+			CurrentRotation.Roll -= RotationSpeed;
 
 		if (DistanceToEndRot.Pitch != 0.0f)
-			CurrentRotation.Pitch -= 1.0f;
+			CurrentRotation.Pitch -= RotationSpeed;
 
 		if (DistanceToEndRot.Yaw != 0.0f)
-			CurrentRotation.Yaw -= 1.0f;
+			CurrentRotation.Yaw -= RotationSpeed;
 
 		SetActorRotation(CurrentRotation);
 	}
