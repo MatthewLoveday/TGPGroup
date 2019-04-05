@@ -34,6 +34,11 @@ void APlatformerGameSafetyNet::Tick(float DeltaTime)
 
 }
 
+void APlatformerGameSafetyNet::SetTeleportLocation(const FVector & newLocation)
+{
+	TeleportLocation = newLocation;
+}
+
 void APlatformerGameSafetyNet::HandleOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
 											 UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
 											 bool bFromSweep, const FHitResult &SweepResult)
