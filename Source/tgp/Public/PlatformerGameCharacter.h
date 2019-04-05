@@ -33,6 +33,12 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Collectables")
 	int CollectableCount;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Collectables")
+	int BrokenChainCount;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Collectables")
+	int OptionalCollectableCount;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
