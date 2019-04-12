@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "tgp.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "PlatformerGameSafetyNet.generated.h"
@@ -39,4 +40,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetTeleportLocation(const FVector& newLocation);
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EMovesetEnum CachedMoveset;
 };
