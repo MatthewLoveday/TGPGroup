@@ -23,6 +23,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	UParticleSystemComponent *ConstantEffect;
 
+	int BounceVal;
+
 	virtual void BeginPlay();
 
 	UFUNCTION()
@@ -30,4 +32,6 @@ protected:
 					   UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
 					   bool bFromSweep, const FHitResult &SweepResult);
 	
+	void CollectableBounce(float DeltaTime);
+
 };
