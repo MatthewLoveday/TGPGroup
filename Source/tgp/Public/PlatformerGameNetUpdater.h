@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "tgp.h"
 #include "CoreMinimal.h"
 #include "PlatformerGameSafetyNet.h"
 #include "PlatformerGameNetUpdater.generated.h"
@@ -30,6 +31,5 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category =TeleportReference)
 	APlatformerGameSafetyNet* SafetyNetRef;
-	
-	
+
 };

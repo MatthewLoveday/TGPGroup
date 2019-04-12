@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "PlatformerGameNetUpdater.h"
 #include "Components/BoxComponent.h"
+#include "PlatformerGameCharacter.h"
 
 APlatformerGameNetUpdater::APlatformerGameNetUpdater()
 {
@@ -22,5 +23,13 @@ void APlatformerGameNetUpdater::HandleOverlap(UPrimitiveComponent *OverlappedCom
 	bool bFromSweep, const FHitResult &SweepResult)
 {
 	SafetyNetRef->SetTeleportLocation(OtherActor->GetActorLocation());
+
+	APlatformerGameCharacter* Character = Cast<APlatformerGameCharacter>(OtherActor);
+
+	if (Character)
+	{
+		SafetyNetRef->CachedMoveset = Character->GetMoveset();
+	}
+
 	UE_LOG(LogTemp, Warning, TEXT("Set Teleport Location"));
 }

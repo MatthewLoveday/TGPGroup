@@ -89,6 +89,28 @@ void APlatformerGameCharacter::ChangeMoveset(EMovesetEnum newMoveSet)
 	}
 }
 
+EMovesetEnum APlatformerGameCharacter::GetMoveset()
+{
+	switch (moveSet) //Entry Conditions
+	{
+	case EMovesetEnum::M_Default:
+		UE_LOG(LogTemp, Warning, TEXT("Default Moveset"));
+		break;
+
+	case EMovesetEnum::M_Balloon:
+		UE_LOG(LogTemp, Warning, TEXT("Balloon Moveset"));
+		break;
+
+	case EMovesetEnum::M_Helicopter:
+		UE_LOG(LogTemp, Warning, TEXT("Heli Moveset"));
+		break;
+
+	default:
+		break;
+	}
+	return moveSet;
+}
+
 // Called when the game starts or when spawned
 void APlatformerGameCharacter::BeginPlay()
 {
