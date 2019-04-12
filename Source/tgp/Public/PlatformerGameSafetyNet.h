@@ -8,7 +8,7 @@
 
 class UBoxComponent;
 
-UCLASS(BlueprintType)
+UCLASS()
 class TGP_API APlatformerGameSafetyNet : public AActor
 {
 	GENERATED_BODY()
@@ -25,7 +25,7 @@ protected:
 	UBoxComponent *CollisionComp;
 
 	UFUNCTION()
-	virtual void HandleOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+	void HandleOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
 					   UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
 					   bool bFromSweep, const FHitResult &SweepResult);
 
@@ -36,7 +36,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
-	void SetTeleportLocation(const FVector& newLocation);
+	
 	
 };
