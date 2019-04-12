@@ -15,22 +15,26 @@ APickupBrokenChain::APickupBrokenChain()
 	ConstantEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ConstantEffect"));
 	ConstantEffect->bAutoActivate = true;
 	ConstantEffect->SetupAttachment(RootComponent);
+
+	BounceVal = 1;
 }
 
 void APickupBrokenChain::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (IsCollected)
+	{
+		HideCollectable();
+		ConstantEffect->Deactivate();
+	}
 }
 
 void APickupBrokenChain::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!ConstantEffect->IsActive() && CollectEffect->HasCompleted())
-	{
-		UE_LOG(LogTemp, Log, TEXT("Particle Finished"));
-		Destroy();
-	}
+	CollectableBounce(DeltaTime);
 }
 
 void APickupBrokenChain::HandleOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
@@ -42,12 +46,24 @@ void APickupBrokenChain::HandleOverlap(UPrimitiveComponent *OverlappedComponent,
 	if (MyCharacter)
 	{
 		UGameplayStatics::PlaySound2D(this, OverlapSound);
-		SphereCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		SphereCollision->SetVisibility(false);
-		MeshComp->SetVisibility(false);
+		HideCollectable();
+		IsCollected = true;
+		MyCharacter->IncrementCollectableCount();
 		ConstantEffect->Deactivate();
 		CollectEffect->Activate();
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Overlap occured"));
+}
+
+void APickupBrokenChain::CollectableBounce(float DeltaTime)
+{
+	BounceVal++;
+
+	double ZIncrease = sin(BounceVal * DeltaTime);
+
+	FVector CurrentLocation = GetActorLocation();
+	CurrentLocation.Z += ZIncrease;
+
+	SetActorLocation(CurrentLocation);
 }

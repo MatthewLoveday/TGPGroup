@@ -36,6 +36,8 @@ APickupBase::APickupBase()
 void APickupBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (IsCollected) HideCollectable();
 }
 
 // Called every frame
@@ -49,4 +51,11 @@ void APickupBase::RotateActor()
 {
 	CurrentRotation.Yaw += RotationSpeed;
 	SetActorRotation(CurrentRotation);
+}
+
+void APickupBase::HideCollectable()
+{
+	SphereCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SphereCollision->SetVisibility(false);
+	MeshComp->SetVisibility(false);
 }
