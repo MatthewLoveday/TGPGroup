@@ -37,7 +37,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	FVector DistanceToMove;
 
-	UPROPERTY(EditAnywhere, Category = "Movement", meta = (ClampMin = "0.0", ClampMax = "360.0", UIMin = "0.0", UIMax = "360.0"))
+	UPROPERTY(EditAnywhere, Category = "Movement", meta = (ClampMin = "-360.0", ClampMax = "360.0", UIMin = "-360.0", UIMax = "360.0"))
 	FRotator DistanceToRotate;
 
 	FVector StartLocation, DistanceToEndLoc, EndLocation;
