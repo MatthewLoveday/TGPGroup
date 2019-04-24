@@ -39,6 +39,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Collectables")
 	int OptionalCollectableCount;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Checkpoint")
+	FVector CheckpointLoc;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -76,5 +79,7 @@ public:
 	FHitResult PerformCircleTrace(ECollisionChannel traceChannel = ECC_GameTraceChannel1, float ZOffset = 0.0f, float radius = 60.0f, bool DrawDebug = false);
 
 	void IncrementCollectableCount() { CollectableCount++; }
+
+	FORCEINLINE FVector GetCheckpointLoc() { return CheckpointLoc; }
 };
 
