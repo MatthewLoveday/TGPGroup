@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "tgp.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "PlatformerGameSafetyNet.generated.h"
@@ -38,4 +39,6 @@ public:
 
 	
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EMovesetEnum CachedMoveset;
 };

@@ -41,5 +41,8 @@ void APlatformerGameSafetyNet::HandleOverlap(UPrimitiveComponent *OverlappedComp
 	APlatformerGameCharacter *MyChar = Cast<APlatformerGameCharacter>(OtherActor);
 
 	if (MyChar)
-		MyChar->SetActorLocation(MyChar->GetCheckpointLoc());
+	{
+		MyChar->SetActorLocation(TeleportLocation);
+		MyChar->ChangeMoveset(CachedMoveset);
+	}
 }

@@ -28,6 +28,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ChangeMoveset(EMovesetEnum newMoveSet);
 
+	UFUNCTION(BlueprintCallable)
+	EMovesetEnum GetMoveset();
+
+
 protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Collectables")
