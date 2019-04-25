@@ -37,7 +37,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
+	UFUNCTION(BlueprintCallable)
+	void SetTeleportLocation(const FVector& newLocation);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EMovesetEnum CachedMoveset;
