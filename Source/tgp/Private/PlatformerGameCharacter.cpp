@@ -11,6 +11,8 @@
 // Sets default values
 APlatformerGameCharacter::APlatformerGameCharacter()
 {
+	alive = true;
+
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -89,25 +91,18 @@ void APlatformerGameCharacter::ChangeMoveset(EMovesetEnum newMoveSet)
 	}
 }
 
-EMovesetEnum APlatformerGameCharacter::GetMoveset()
+bool APlatformerGameCharacter::IsAlive() const
 {
-	switch (moveSet) //Entry Conditions
-	{
-	case EMovesetEnum::M_Default:
-		UE_LOG(LogTemp, Warning, TEXT("Default Moveset"));
-		break;
+	return alive;
+}
 
-	case EMovesetEnum::M_Balloon:
-		UE_LOG(LogTemp, Warning, TEXT("Balloon Moveset"));
-		break;
+void APlatformerGameCharacter::Respawn_Implementation()
+{
+	alive = true;
+}
 
-	case EMovesetEnum::M_Helicopter:
-		UE_LOG(LogTemp, Warning, TEXT("Heli Moveset"));
-		break;
-
-	default:
-		break;
-	}
+EMovesetEnum APlatformerGameCharacter::GetMoveset() const
+{
 	return moveSet;
 }
 

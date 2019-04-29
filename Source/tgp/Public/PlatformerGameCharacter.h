@@ -29,10 +29,18 @@ public:
 	void ChangeMoveset(EMovesetEnum newMoveSet);
 
 	UFUNCTION(BlueprintCallable)
-	EMovesetEnum GetMoveset();
+	EMovesetEnum GetMoveset() const;
 
+	UFUNCTION(BlueprintCallable)
+	bool IsAlive() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void Respawn();
 
 protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
+	bool alive;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Collectables")
 	int CollectableCount;
@@ -49,22 +57,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Moveset)
 	EMovesetEnum moveSet;
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void EnterDefaultMoveSet();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void EnterHeliMoveSet();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void EnterBalloonMoveSet();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void ExitDefaultMoveSet();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void ExitHeliMoveSet();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void ExitBalloonMoveSet();
 public:	
 	// Called every frame

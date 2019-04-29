@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "Runtime/Engine/Classes/Engine/TargetPoint.h"
+#include "PlatformerGameCharacter.h"
 #include "Runtime/AIModule/Classes/Navigation/NavLinkProxy.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "EnemyBaseCharacter.h"
@@ -15,6 +16,7 @@
  *
  */
 
+UENUM(BlueprintType)
 enum class EMoveState : uint8
 {
 	Spawning	UMETA(DisplayName = "Spawning"),
@@ -25,6 +27,13 @@ enum class EMoveState : uint8
 	Sleeping	UMETA(DisplayName = "Sleeping"),
 	Returning	UMETA(DisplayName = "Returning"),
 };
+UENUM(BlueprintType)
+enum class ENextAction : uint8 {
+	Nothing = 0 UMETA(DisplayName = "Nothing"),
+	NextWaypoint UMETA(DisplayName = "Find Next Waypoint"),
+	ReturnToWaypoint UMETA(DisplayName = "Find Next Waypoint"),
+	ReturnToLastLocation UMETA(DisplayName = "Go To Last Position")
+};
 
 
 UCLASS()
@@ -34,6 +43,12 @@ class TGP_API AEnemyController : public AAIController
 public:
 	void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime) override;
+
+	
+
+	
+
 
 	//UPROPERTY(BlueprintAssignable, Category = "SmartLinkBehaviour")
 	//FSmartLinkReachedSignature OnSmartLinkReached;
@@ -41,16 +56,28 @@ public:
 	void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+		EMoveState MoveState = EMoveState::Spawning;
+
+
 private:
-	//UPROPERTY()
+
 	AEnemyBaseCharacter * Character;
+
+	TArray<APlatformerGameCharacter *> Players;
 	//TArray<AActor*> Waypoints;
+
+	ENextAction NextAction = ENextAction::Nothing;
+	float idletime = 0.0f;
 
 //UFUNCTION()
 	//ATargetPoint* GetRandomWaypoint();
 
 	UFUNCTION()
 		void GoToWaypoint();
+
+	APlatformerGameCharacter * GetNearbyPlayer(float & Distance);
+	bool CanSeePlayer(APlatformerGameCharacter * Player);
 
 	//UFUNCTION(BlueprintCallable, Category = "SmartLinkBehaviour")
 		//void SmartLinkTraverse();
