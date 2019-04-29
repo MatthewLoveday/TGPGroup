@@ -17,7 +17,7 @@ APickupBase::APickupBase()
 	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	RootComponent = SphereCollision;
 	
-	SphereCollision->SetHiddenInGame(false);
+	SphereCollision->SetHiddenInGame(true);
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
