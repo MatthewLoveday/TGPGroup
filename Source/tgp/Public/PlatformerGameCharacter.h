@@ -5,10 +5,11 @@
 #include "tgp.h"
 #include "GameFramework/Character.h"
 #include "Engine/World.h"
+#include "PlatformerGameSafetyNet.h"
 #include "PlatformerGameCharacter.generated.h"
 
 
-UCLASS()
+UCLASS(BlueprintType)
 class TGP_API APlatformerGameCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -50,6 +51,9 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Collectables")
 	int OptionalCollectableCount;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Respawn")
+		 APlatformerGameSafetyNet* SafetyNetRef;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
