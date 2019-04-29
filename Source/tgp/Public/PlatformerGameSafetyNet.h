@@ -30,7 +30,7 @@ protected:
 					   UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
 					   bool bFromSweep, const FHitResult &SweepResult);
 
-	UPROPERTY(EditAnywhere, Category = "Teleport Options")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Teleport Options")
 	FVector TeleportLocation;
 
 public:	
