@@ -3,6 +3,7 @@
 #include "EnemyBaseCharacter.h"
 #include "Runtime/Engine/Public/DrawDebugHelpers.h"
 #include "Runtime/Engine/Classes/Components/CapsuleComponent.h"
+#include "Runtime/Engine/Classes/Components/SkeletalMeshComponent.h"
 
 // Sets default values
 AEnemyBaseCharacter::AEnemyBaseCharacter()
@@ -56,10 +57,12 @@ void AEnemyBaseCharacter::NavJumpTo(FVector Destination)
 		float FallDistance = _JumpMidPosition.Z - _JumpEndPosition.Z;
 
 		//estimate total airtime for jump
-		float Airtime = (JumpDistance + FallDistance) / 2.0f;
+		float Airtime = FMath::Sqrt(JumpDistance + FallDistance);
 
 		//move speed for jump
 		float MoveSpeed = 500;
+
+		bool alive = true;
 
 		UCharacterMovementComponent * CMoveComp = Cast<UCharacterMovementComponent>(GetMovementComponent());
 		/*if (CMoveComp != nullptr) {
@@ -87,7 +90,7 @@ void AEnemyBaseCharacter::NavJumpTo(FVector Destination)
 void AEnemyBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	Alive = true;
 }
 
 // Called every frame
@@ -98,7 +101,14 @@ void AEnemyBaseCharacter::Tick(float DeltaTime)
 	if (Jumping) {
 		JumpTransition(DeltaTime);
 	}
+	if (Alive == false) {
+		if (DeathTime > 0) {
+			if (Lifetime >= DeathTime + DeathFade) {
+				Destroy();
+			}
+		}
 
+	}
 }
 
 /*
@@ -123,6 +133,22 @@ void AEnemyBaseCharacter::ComplexUpdate(float DeltaTime)
 }
 
 */
+
+void AEnemyBaseCharacter::Die()
+{
+	//TODO delete self
+	Alive = false;
+	USkeletalMeshComponent * M = GetMesh();
+	if (M != nullptr) {
+		M->SetSimulatePhysics(true);
+		DeathTime = Lifetime;
+	}
+	else {
+		//death animation?
+	}
+
+	//Destroy();
+}
 
 // Called to bind functionality to input
 void AEnemyBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

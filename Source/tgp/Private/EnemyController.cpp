@@ -2,6 +2,7 @@
 
 #include "EnemyController.h"
 #include "Runtime/Engine/Public/DrawDebugHelpers.h"
+	
 
 void AEnemyController::BeginPlay()
 {
@@ -16,6 +17,7 @@ void AEnemyController::BeginPlay()
 		GoToWaypoint();
 
 		Character->LastNavPosition = Character->GetActorLocation();
+		SetWalkSpeed(Character->Walk_Speed);
 	} 
 }
 
@@ -117,11 +119,15 @@ void AEnemyController::Tick(float DeltaTime){
 							break;
 						case ENextAction::ReturnToWaypoint:
 							//2 = return to previously targeted waypoint
-
+							agro = false; //we are no longer off-path, so no longer agro
+							GoToWaypoint();
 							break;
 
 						case ENextAction::ReturnToLastLocation:
+							//stopped chasing player, return to last place was at
+							MoveState = EMoveState::Returning;
 
+							MoveToLocation(Character->LastNavPosition);
 							break;
 						default:
 
@@ -132,6 +138,7 @@ void AEnemyController::Tick(float DeltaTime){
 				else {//not idle
 					
 					//roaming or something
+
 				}
 			}
 			if (Players.Num() == 0) {
@@ -159,6 +166,15 @@ void AEnemyController::Tick(float DeltaTime){
 				//raytrace to player
 				if (CanSeePlayer(Player)) {
 					//chase player
+					if (Character->MoveType == EMoveType::Stationary) {
+						//try to hit if in range
+						if (PlayerDistance < 100) {
+							//play hit animation, if there is one
+						}
+					}
+					else {
+						ChasePlayer(Player);
+					}
 				}
 			}
 		}
@@ -173,6 +189,68 @@ void AEnemyController::Tick(float DeltaTime){
 	//once reach original position, return to intended patrol.
 }
 
+
+bool AEnemyController::CanWalkTo(FVector Position) {
+	UNavigationSystemV1* navSys = UNavigationSystemV1::GetCurrent(GetWorld());
+
+	UNavigationPath* path = navSys->FindPathToLocationSynchronously(GetWorld(), GetPawn()->GetActorLocation(), Position);
+	return path->IsValid();
+}
+
+void AEnemyController::SetWalkSpeed(float speed) {
+	UCharacterMovementComponent * CMoveComp = Cast<UCharacterMovementComponent>(Character->GetMovementComponent());
+	CMoveComp->MaxWalkSpeed = speed;
+}
+
+void AEnemyController::ChasePlayer(APlatformerGameCharacter* Player) {
+
+	FVector PlayerPosition = Player->GetActorLocation();
+
+	
+	//UNavigationPath* path = navSys->FindPathSync()
+	if (CanWalkTo(PlayerPosition)) {
+
+
+
+
+
+
+		//FVector End = PlayerPosition + FVector(0,0,-600.0);
+		//FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
+		//RV_TraceParams.bTraceComplex = false;
+		//RV_TraceParams.bTraceAsyncScene = false;
+		//RV_TraceParams.bReturnPhysicalMaterial = false;
+		//const FName TraceTag("MyTraceTag");
+		//RV_TraceParams.TraceTag = TraceTag;
+		//FHitResult RV_Hit;
+
+		//DrawDebugLine(GetWorld(), PlayerPosition, End, FColor::Green, false, 1, 0, 5);
+
+		//bool Success = GetWorld()->LineTraceSingleByChannel(RV_Hit, PlayerPosition, End, ECC_EngineTraceChannel1, RV_TraceParams);
+		//if (Success) {
+			//UE_LOG(LogTemp, Verbose, TEXT("HIT DETECTED"));
+			//FVector HitPos = RV_Hit.ImpactPoint;
+
+			//UE_LOG(LogTemp, Verbose, TEXT("SETTING INFO"));
+		if (agro == false) {
+			Character->LastNavPosition = Character->GetActorLocation();
+			agro = true;
+		}
+		SetWalkSpeed(Character->Run_Speed);
+		Running = true;
+		MoveState = EMoveState::Chasing;
+
+		//UE_LOG(LogTemp, Verbose, TEXT("GOING TO POSITION"));
+		//MoveToLocation(HitPos);
+
+		MoveToLocation(PlayerPosition);
+		//UE_LOG(LogTemp, Verbose, TEXT("POSITION-GOTO SUCCESS"));
+	//}
+	//else {
+		//act like it wasn't called?
+	//}
+	}
+}
 
 bool AEnemyController::CanSeePlayer(APlatformerGameCharacter* Player) {
 	return true;
@@ -190,7 +268,7 @@ APlatformerGameCharacter* AEnemyController::GetNearbyPlayer(float &Distance) {
 			FVector Direction; float NewDistance;
 			Difference.ToDirectionAndLength(Direction, NewDistance);
 			if (NewDistance < ClosestDistance) {
-				DrawDebugLine(GetWorld(), MyPosition, TheirPosition, FColor(255, 0, 0), true, 10.0f, 0, 1.0f);
+				//DrawDebugLine(GetWorld(), MyPosition, TheirPosition, FColor(255, 0, 0), true, 10.0f, 0, 1.0f);
 				ClosestDistance = NewDistance;
 				ClosestPlayer = Player;
 			}
@@ -219,10 +297,17 @@ void AEnemyController::GoToWaypoint()
 		int numPoints = Character->Walk_Points.Num();
 		if (numPoints > 0) {
 			if (Character->CurrentWaypoint < numPoints && Character->CurrentWaypoint>=0) {
-				MoveToActor(Character->Walk_Points[Character->CurrentWaypoint]);
+				AActor * Target = Character->Walk_Points[Character->CurrentWaypoint];
+				if (CanWalkTo(Target->GetActorLocation())) {
+					MoveToActor(Target);
+				}
 			}
 			else {
+				AActor * Target = Character->Walk_Points[0];
 				MoveToActor(Character->Walk_Points[0]);
+				if (CanWalkTo(Target->GetActorLocation())) {
+					MoveToActor(Target);
+				}
 			}
 			MoveState = EMoveState::Roaming;
 		}
@@ -247,6 +332,8 @@ void AEnemyController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollow
 		if (Character->MoveType != EMoveType::Stationary) {
 			//MoveState is the cause of hitting this pointer
 			if (MoveState == EMoveState::Chasing) {
+				Running = false;
+				SetWalkSpeed(Character->Walk_Speed);
 				//reached player position?
 				float PlayerDistance = Character->De_Agro_Range;
 				APlatformerGameCharacter* Player = GetNearbyPlayer(PlayerDistance);
@@ -258,7 +345,7 @@ void AEnemyController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollow
 				else {
 					//raytrace to player to see if within sight
 					if (CanSeePlayer(Player)) {
-
+						ChasePlayer(Player);
 					}
 				}
 				
