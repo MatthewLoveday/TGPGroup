@@ -126,8 +126,9 @@ void AEnemyController::Tick(float DeltaTime){
 						case ENextAction::ReturnToLastLocation:
 							//stopped chasing player, return to last place was at
 							MoveState = EMoveState::Returning;
-
-							MoveToLocation(Character->LastNavPosition);
+							if (Character->LastNavPosition != FVector(0,0,0)) {
+								MoveToLocation(Character->LastNavPosition);
+							}
 							break;
 						default:
 
@@ -298,15 +299,19 @@ void AEnemyController::GoToWaypoint()
 		if (numPoints > 0) {
 			if (Character->CurrentWaypoint < numPoints && Character->CurrentWaypoint>=0) {
 				AActor * Target = Character->Walk_Points[Character->CurrentWaypoint];
-				if (CanWalkTo(Target->GetActorLocation())) {
-					MoveToActor(Target);
+				if (Target != nullptr) {
+					if (CanWalkTo(Target->GetActorLocation())) {
+						MoveToActor(Target);
+					}
 				}
 			}
 			else {
 				AActor * Target = Character->Walk_Points[0];
-				MoveToActor(Character->Walk_Points[0]);
-				if (CanWalkTo(Target->GetActorLocation())) {
-					MoveToActor(Target);
+				if (Target != nullptr) {
+					MoveToActor(Character->Walk_Points[0]);
+					if (CanWalkTo(Target->GetActorLocation())) {
+						MoveToActor(Target);
+					}
 				}
 			}
 			MoveState = EMoveState::Roaming;
