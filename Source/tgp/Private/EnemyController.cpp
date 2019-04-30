@@ -192,9 +192,13 @@ void AEnemyController::Tick(float DeltaTime){
 
 bool AEnemyController::CanWalkTo(FVector Position) {
 	UNavigationSystemV1* navSys = UNavigationSystemV1::GetCurrent(GetWorld());
-
-	UNavigationPath* path = navSys->FindPathToLocationSynchronously(GetWorld(), GetPawn()->GetActorLocation(), Position);
-	return path->IsValid();
+	if (navSys) {
+		UNavigationPath* path = navSys->FindPathToLocationSynchronously(GetWorld(), GetPawn()->GetActorLocation(), Position);
+		return path->IsValid();
+	}
+	else {
+		return false;
+	}
 }
 
 void AEnemyController::SetWalkSpeed(float speed) {
@@ -203,52 +207,48 @@ void AEnemyController::SetWalkSpeed(float speed) {
 }
 
 void AEnemyController::ChasePlayer(APlatformerGameCharacter* Player) {
-
-	FVector PlayerPosition = Player->GetActorLocation();
-
-	
-	//UNavigationPath* path = navSys->FindPathSync()
-	if (CanWalkTo(PlayerPosition)) {
+	if (Player != nullptr) {
+		FVector PlayerPosition = Player->GetActorLocation();
 
 
+		//UNavigationPath* path = navSys->FindPathSync()
+		if (CanWalkTo(PlayerPosition)) {
 
+			//FVector End = PlayerPosition + FVector(0,0,-600.0);
+			//FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
+			//RV_TraceParams.bTraceComplex = false;
+			//RV_TraceParams.bTraceAsyncScene = false;
+			//RV_TraceParams.bReturnPhysicalMaterial = false;
+			//const FName TraceTag("MyTraceTag");
+			//RV_TraceParams.TraceTag = TraceTag;
+			//FHitResult RV_Hit;
 
+			//DrawDebugLine(GetWorld(), PlayerPosition, End, FColor::Green, false, 1, 0, 5);
 
+			//bool Success = GetWorld()->LineTraceSingleByChannel(RV_Hit, PlayerPosition, End, ECC_EngineTraceChannel1, RV_TraceParams);
+			//if (Success) {
+				//UE_LOG(LogTemp, Verbose, TEXT("HIT DETECTED"));
+				//FVector HitPos = RV_Hit.ImpactPoint;
 
-		//FVector End = PlayerPosition + FVector(0,0,-600.0);
-		//FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
-		//RV_TraceParams.bTraceComplex = false;
-		//RV_TraceParams.bTraceAsyncScene = false;
-		//RV_TraceParams.bReturnPhysicalMaterial = false;
-		//const FName TraceTag("MyTraceTag");
-		//RV_TraceParams.TraceTag = TraceTag;
-		//FHitResult RV_Hit;
+				//UE_LOG(LogTemp, Verbose, TEXT("SETTING INFO"));
+			if (agro == false) {
+				Character->LastNavPosition = Character->GetActorLocation();
+				agro = true;
+			}
+			SetWalkSpeed(Character->Run_Speed);
+			Running = true;
+			MoveState = EMoveState::Chasing;
 
-		//DrawDebugLine(GetWorld(), PlayerPosition, End, FColor::Green, false, 1, 0, 5);
+			//UE_LOG(LogTemp, Verbose, TEXT("GOING TO POSITION"));
+			//MoveToLocation(HitPos);
 
-		//bool Success = GetWorld()->LineTraceSingleByChannel(RV_Hit, PlayerPosition, End, ECC_EngineTraceChannel1, RV_TraceParams);
-		//if (Success) {
-			//UE_LOG(LogTemp, Verbose, TEXT("HIT DETECTED"));
-			//FVector HitPos = RV_Hit.ImpactPoint;
-
-			//UE_LOG(LogTemp, Verbose, TEXT("SETTING INFO"));
-		if (agro == false) {
-			Character->LastNavPosition = Character->GetActorLocation();
-			agro = true;
+			MoveToLocation(PlayerPosition);
+			//UE_LOG(LogTemp, Verbose, TEXT("POSITION-GOTO SUCCESS"));
+		//}
+		//else {
+			//act like it wasn't called?
+		//}
 		}
-		SetWalkSpeed(Character->Run_Speed);
-		Running = true;
-		MoveState = EMoveState::Chasing;
-
-		//UE_LOG(LogTemp, Verbose, TEXT("GOING TO POSITION"));
-		//MoveToLocation(HitPos);
-
-		MoveToLocation(PlayerPosition);
-		//UE_LOG(LogTemp, Verbose, TEXT("POSITION-GOTO SUCCESS"));
-	//}
-	//else {
-		//act like it wasn't called?
-	//}
 	}
 }
 
