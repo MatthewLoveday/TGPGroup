@@ -73,6 +73,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
 		float De_Agro_Range = 500.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+		float Walk_Speed = 200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+		float Run_Speed = 400.0f;
+
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 		void NavJumpTo(FVector Destination);
 
@@ -83,6 +89,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
 		float Lifetime = 0.0f;
+
+	float DeathTime = 0.0f;
+	float DeathFade = 5.0f;
 
 protected:
 	// Called when the game starts or when spawned
@@ -98,9 +107,11 @@ public:
 
 	//virtual void ComplexUpdate(float DeltaTime);
 
+	UFUNCTION(BlueprintCallable, Category = "Enemy")
+	virtual void Die();
 	
-
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+		bool Alive = false;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

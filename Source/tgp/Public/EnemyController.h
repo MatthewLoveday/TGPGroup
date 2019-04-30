@@ -5,9 +5,14 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "Runtime/Engine/Classes/Engine/TargetPoint.h"
+#include "Runtime/Engine/Classes/Engine/World.h"
+#include "Runtime/NavigationSystem/Public/NavigationSystem.h"
+#include "Runtime/NavigationSystem/Public/NavigationPath.h"
+
 #include "PlatformerGameCharacter.h"
 #include "Runtime/AIModule/Classes/Navigation/NavLinkProxy.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "EnemyBaseCharacter.h"
 #include "EnemyController.generated.h"
 
@@ -45,6 +50,12 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	bool CanWalkTo(FVector Position);
+
+	void SetWalkSpeed(float speed);
+
+	void ChasePlayer(APlatformerGameCharacter * Player);
+
 	
 
 	
@@ -59,15 +70,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
 		EMoveState MoveState = EMoveState::Spawning;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+		bool Running = false;
 
 private:
 
 	AEnemyBaseCharacter * Character;
 
 	TArray<APlatformerGameCharacter *> Players;
+	//APlatformerGameCharacter* _ClosestPlayer;
 	//TArray<AActor*> Waypoints;
 
 	ENextAction NextAction = ENextAction::Nothing;
+	bool agro = false;
 	float idletime = 0.0f;
 
 //UFUNCTION()
