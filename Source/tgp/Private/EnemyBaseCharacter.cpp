@@ -1,27 +1,33 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "EnemyBaseCharacter.h"
+#include "Runtime/Engine/Public/DrawDebugHelpers.h"
+#include "Runtime/Engine/Classes/Components/CapsuleComponent.h"
+#include "Runtime/Engine/Classes/Components/SkeletalMeshComponent.h"
 
 // Sets default values
 AEnemyBaseCharacter::AEnemyBaseCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	Jumping = false;
-	CurrentWaypoint = 0;
-	_JumpSpacing = 70.0f;
-	_JumpMidTime = 0.5;
-
+	UCapsuleComponent* Capsule = GetCapsuleComponent();
+	if (Capsule != nullptr) {
+		_PlayerHeight = Capsule->GetScaledCapsuleHalfHeight();
+	}
+	else {
+		_PlayerHeight = 40.0f;
+	}
 }
 
 void AEnemyBaseCharacter::NavJumpTo(FVector Destination)
 {
-	if (CanJump()) {
+	if (CanJump() && (MoveType == EMoveType::Simple || MoveType == EMoveType::Complex)) {
 		//perform all necessary one-time calculations for jump "physics".
 
 
-		_JumpStartPosition = GetActorLocation();
+		_JumpStartPosition = GetActorLocation()-FVector(0,0,_PlayerHeight);
 		_JumpEndPosition = Destination;
+		_JumpTime = 0;
 
 		Jumping = true;
 		FVector MovementDirection = (_JumpEndPosition - _JumpStartPosition).GetSafeNormal();
@@ -30,7 +36,7 @@ void AEnemyBaseCharacter::NavJumpTo(FVector Destination)
 		float DirectionDot = FVector::DotProduct(MovementDirection, FVector::UpVector);
 
 		//mid t position of jump highest point
-		float _JumpMidTime = 0.5 + 0.5*DirectionDot;
+		_JumpMidTime = 0.5 + 0.5*DirectionDot;
 
 		//base mid position of jump
 		_JumpMidPosition = FMath::Lerp(_JumpStartPosition, _JumpEndPosition, _JumpMidTime);
@@ -42,7 +48,7 @@ void AEnemyBaseCharacter::NavJumpTo(FVector Destination)
 		FVector CurrentPosition;
 
 		//distance
-		float DistanceXY = FVector::DistSquaredXY(_JumpStartPosition, _JumpEndPosition);
+		float DistanceXY = FVector::DistXY(_JumpStartPosition, _JumpEndPosition);
 
 		//distance to jump
 		float JumpDistance = _JumpMidPosition.Z - _JumpStartPosition.Z;
@@ -51,26 +57,30 @@ void AEnemyBaseCharacter::NavJumpTo(FVector Destination)
 		float FallDistance = _JumpMidPosition.Z - _JumpEndPosition.Z;
 
 		//estimate total airtime for jump
-		float Airtime = (JumpDistance + FallDistance) / 2.0f;
+		float Airtime = FMath::Sqrt(JumpDistance + FallDistance);
 
 		//move speed for jump
-		float MoveSpeed = 600;
+		float MoveSpeed = 500;
+
+		bool alive = true;
 
 		UCharacterMovementComponent * CMoveComp = Cast<UCharacterMovementComponent>(GetMovementComponent());
-		if (CMoveComp != nullptr) {
+		/*if (CMoveComp != nullptr) {
 			MoveSpeed = CMoveComp->MaxWalkSpeed;
 		}
 		else {
-			MoveSpeed = 600;
-		}
+			MoveSpeed = 300;
+		}*/
 
 		//duration of jump based on speed of traversal, yes this means that they'll fall faster if they're moving faster, but don't think about it.
-		float _JumpDuration = (DistanceXY + Airtime) / MoveSpeed;
-
+		_JumpDuration = (DistanceXY + Airtime) / MoveSpeed;
+		_JumpPercent = 0;
 		//flattened forward direction of jump to angle character
 		FVector FlatForward = FVector(MovementDirection.X, MovementDirection.Y, 0).GetSafeNormal();
 		_JumpAngle = FlatForward.Rotation().Quaternion();
 
+		//DrawDebugLine(GetWorld(), _JumpStartPosition, _JumpMidPosition, FColor(255, 0, 0), true, 10.0f, 0, 10.0f);
+		//DrawDebugLine(GetWorld(), _JumpMidPosition, _JumpEndPosition, FColor(255, 0, 0), true, 10.0f, 0, 10.0f);
 
 	}
 }
@@ -80,32 +90,39 @@ void AEnemyBaseCharacter::NavJumpTo(FVector Destination)
 void AEnemyBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	Alive = true;
 }
 
 // Called every frame
 void AEnemyBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	/*switch (MoveType) {
-	case EMoveType::Complex:
-		AEnemyBaseCharacter::ComplexUpdate(DeltaTime);
-		break;
-	case EMoveType::Simple:
-		AEnemyBaseCharacter::SimpleUpdate(DeltaTime);
-		break;
-	case EMoveType::Stationary:
-
-		break;
-	}
-	*/
+	Lifetime += DeltaTime;
 	if (Jumping) {
 		JumpTransition(DeltaTime);
 	}
+	if (Alive == false) {
+		if (DeathTime > 0) {
+			if (Lifetime >= DeathTime + DeathFade) {
+				Destroy();
+			}
+		}
 
+	}
 }
 
 /*
+
+void AEnemyBaseCharacter::StationaryUpdate(float DeltaTime)
+{
+
+}
+
+void AEnemyBaseCharacter::SimpleUpdate(float DeltaTime)
+{
+
+}
+
 void AEnemyBaseCharacter::ComplexUpdate(float DeltaTime)
 {
 	switch (_MoveState) {
@@ -115,15 +132,23 @@ void AEnemyBaseCharacter::ComplexUpdate(float DeltaTime)
 	}
 }
 
-void AEnemyBaseCharacter::SimpleUpdate(float DeltaTime)
-{
+*/
 
+void AEnemyBaseCharacter::Die()
+{
+	//TODO delete self
+	Alive = false;
+	USkeletalMeshComponent * M = GetMesh();
+	if (M != nullptr) {
+		M->SetSimulatePhysics(true);
+		DeathTime = Lifetime;
+	}
+	else {
+		//death animation?
+	}
+
+	//Destroy();
 }
-
-void AEnemyBaseCharacter::StationaryUpdate(float DeltaTime)
-{
-
-}*/
 
 // Called to bind functionality to input
 void AEnemyBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -136,11 +161,14 @@ void AEnemyBaseCharacter::JumpTransition(float DeltaTime)
 {
 	//Z IS UP!
 
+	UE_LOG(LogTemp, Warning, TEXT("Jumping"));
 	UCharacterMovementComponent * CMoveComp = Cast<UCharacterMovementComponent>(GetMovementComponent());
 
 	_JumpTime += DeltaTime;
-	UE_LOG(LogTemp, Warning, TEXT("Jumping"));
-	float JumpPercent = FMath::Clamp(1.0f / _JumpDuration * _JumpTime, 0.0f, 1.0f);
+	FVector PreviousPosition = GetActorLocation();
+
+	_JumpPercent = FMath::Clamp(1.0f / _JumpDuration * _JumpTime, 0.0f, 1.0f);
+
 	FVector Midposition = FMath::Lerp(_JumpStartPosition, _JumpEndPosition, 0.5);
 	Midposition.Z = FMath::Max(_JumpStartPosition.Z, _JumpEndPosition.Z) + _JumpSpacing;
 	FVector CurrentPosition;
@@ -155,21 +183,21 @@ void AEnemyBaseCharacter::JumpTransition(float DeltaTime)
 	//else {
 	//	MoveSpeed = 600;
 	//}
-	if (JumpPercent >= 1.0f) {
+	if (_JumpPercent >= 1.0f) {
 		Jumping = false;
-		CurrentPosition = _JumpEndPosition;
+		CurrentPosition = _JumpEndPosition + FVector(0, 0, 20);
 	}
 	else {
 		//CurrentPosition = blah
-		FVector XY = FMath::LerpStable(_JumpStartPosition, _JumpEndPosition, JumpPercent);
-		float Z = 0;
-		if (_JumpTime < _JumpMidTime) {
-			Z = FMath::InterpEaseIn(_JumpStartPosition.Z, _JumpMidPosition.Z, 1.0f / _JumpMidTime * _JumpTime, 2);
+		FVector XY = FMath::LerpStable(_JumpStartPosition, _JumpEndPosition, _JumpPercent);
+		float Z = 0.0f;
+		if (_JumpPercent < _JumpMidTime) {
+			Z = FMath::InterpEaseOut(_JumpStartPosition.Z, _JumpMidPosition.Z, 1.0f / _JumpMidTime * _JumpPercent, 2);
 		}
-		else if (_JumpTime > _JumpMidTime) {
-			float timeleft = 1 - _JumpMidTime;
-			float latertime = _JumpTime - _JumpMidTime;
-			Z = FMath::InterpEaseOut(_JumpMidPosition.Z, _JumpEndPosition.Z, 1.0f / timeleft * latertime, 2);
+		else if (_JumpPercent > _JumpMidTime) {
+			float timeleft = 1.0f - _JumpMidTime;
+			float latertime = _JumpPercent - _JumpMidTime;
+			Z = FMath::InterpEaseIn(_JumpMidPosition.Z, _JumpEndPosition.Z, 1.0f / timeleft * latertime, 2);
 		}
 		else {
 			Z = _JumpMidPosition.Z; //extremely unlikely, but still possible.
@@ -179,8 +207,8 @@ void AEnemyBaseCharacter::JumpTransition(float DeltaTime)
 
 		CurrentPosition = FVector(XY.X, XY.Y, Z);
 	}
-
-	SetActorLocationAndRotation(CurrentPosition, _JumpAngle, true, nullptr, ETeleportType::None);
+	
+	SetActorLocationAndRotation(CurrentPosition+FVector(0, 0, _PlayerHeight), _JumpAngle, false, nullptr, ETeleportType::None);
 
 
 }
